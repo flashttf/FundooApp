@@ -29,8 +29,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import com.bridgelabz.fundoo.user.model.Note;
-import com.bridgelabz.fundoo.user.model.Response;
-import com.bridgelabz.fundoo.utility.ResponseUtility;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
@@ -41,7 +39,7 @@ public class ElasticSearchServiceImpl implements IElasticSearchService {
 
 	@Autowired
 	private RestHighLevelClient client;
-	
+
 	@Autowired
 	Environment environment;
 
@@ -50,10 +48,10 @@ public class ElasticSearchServiceImpl implements IElasticSearchService {
 
 	@Override
 	public String createNote(Note note) throws IOException {
-		
-		@SuppressWarnings({"unchecked"})
+
+		@SuppressWarnings({ "unchecked" })
 		Map<String, Object> noteMapper = objectMapper.convertValue(note, Map.class);
-		
+
 		IndexRequest indexRequest = new IndexRequest(INDEX, TYPE, note.getNoteId()).source(noteMapper);
 		IndexResponse indexResponse = client.index(indexRequest, RequestOptions.DEFAULT);
 
@@ -63,26 +61,26 @@ public class ElasticSearchServiceImpl implements IElasticSearchService {
 
 	@Override
 	public String updateNote(Note note) throws Exception {
-		Note noteDocument=findById(note.getNoteId());
-		
-		UpdateRequest updateRequest=new UpdateRequest(INDEX,TYPE,noteDocument.getNoteId());
-		
+		Note noteDocument = findById(note.getNoteId());
+
+		UpdateRequest updateRequest = new UpdateRequest(INDEX, TYPE, noteDocument.getNoteId());
+
 		@SuppressWarnings("unchecked")
-		Map<String , Object> noteMapper=objectMapper.convertValue(note, Map.class);
-		
+		Map<String, Object> noteMapper = objectMapper.convertValue(note, Map.class);
+
 		updateRequest.doc(noteMapper);
-		
-		UpdateResponse updateResponse=client.update(updateRequest, RequestOptions.DEFAULT);
-		 return updateResponse.getResult().name();
+
+		UpdateResponse updateResponse = client.update(updateRequest, RequestOptions.DEFAULT);
+		return updateResponse.getResult().name();
 //		Response response=ResponseUtility.getResponse(202, "",environment.getProperty("elastic.noteUpdate.success"));
 //		return response;
 	}
 
 	@Override
-	public String deleteNote(String id) throws Exception { 	
+	public String deleteNote(String id) throws Exception {
 
-		DeleteRequest deleteRequest=new DeleteRequest(INDEX,TYPE,id);	
-		DeleteResponse deleteResponse=client.delete(deleteRequest, RequestOptions.DEFAULT);
+		DeleteRequest deleteRequest = new DeleteRequest(INDEX, TYPE, id);
+		DeleteResponse deleteResponse = client.delete(deleteRequest, RequestOptions.DEFAULT);
 		return deleteResponse.getResult().name();
 	}
 
@@ -96,48 +94,42 @@ public class ElasticSearchServiceImpl implements IElasticSearchService {
 	}
 
 	@Override
-	public List<Note> findByTitle(String title,String userId) throws Exception {
-		QueryBuilder queryBuilder=QueryBuilders
-				.boolQuery().must(QueryBuilders
-						.matchQuery("title", title)).filter(QueryBuilders.termsQuery("userId", userId));
-		
-		
-		SearchSourceBuilder searchSourceBuilder=new SearchSourceBuilder();
+	public List<Note> findByTitle(String title, String userId) throws Exception {
+		QueryBuilder queryBuilder = QueryBuilders.boolQuery().must(QueryBuilders.matchQuery("title", title))
+				.filter(QueryBuilders.termsQuery("userId", userId));
+
+		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 		searchSourceBuilder.query(queryBuilder);
-		
-		SearchRequest searchRequest=new SearchRequest();
+
+		SearchRequest searchRequest = new SearchRequest();
 		searchRequest.source(searchSourceBuilder);
-		
-		SearchResponse searchResponse=client.search(searchRequest, RequestOptions.DEFAULT);
-		
+
+		SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
+
 		return getSearchResult(searchResponse);
-	
-	
 
-}
+	}
 
-	private List<Note> getSearchResult(SearchResponse searchResponse) throws Exception{
-		SearchHit[] searchHit=searchResponse.getHits().getHits();
-		
-		List<Note> noteDocuments=new ArrayList<>();
-		
-		if(searchHit.length>0) {
+	private List<Note> getSearchResult(SearchResponse searchResponse) throws Exception {
+		SearchHit[] searchHit = searchResponse.getHits().getHits();
+
+		List<Note> noteDocuments = new ArrayList<>();
+
+		if (searchHit.length > 0) {
 			Arrays.stream(searchHit)
-					.forEach(hit->noteDocuments
-							.add(objectMapper
-									.convertValue(hit.getSourceAsMap(), Note.class)));
+					.forEach(hit -> noteDocuments.add(objectMapper.convertValue(hit.getSourceAsMap(), Note.class)));
 		}
 		return noteDocuments;
 	}
 
-	public List<Note> findAll()  throws Exception{
-		SearchRequest searchRequest=new SearchRequest();
-		
-		SearchSourceBuilder searchSourceBuilder=new SearchSourceBuilder();
+	public List<Note> findAll() throws Exception {
+		SearchRequest searchRequest = new SearchRequest();
+
+		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
 		searchSourceBuilder.query(QueryBuilders.matchAllQuery());
 		searchRequest.source(searchSourceBuilder);
-		
-		SearchResponse searchResponse=client.search(searchRequest, RequestOptions.DEFAULT);
+
+		SearchResponse searchResponse = client.search(searchRequest, RequestOptions.DEFAULT);
 		return getSearchResult(searchResponse);
 	}
 }

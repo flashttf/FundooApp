@@ -27,36 +27,36 @@ public class ElasticSearchController {
 
 	@Autowired
 	private ElasticSearchServiceImpl elasticSearchServiceImpl;
-
-	@PostMapping("/elasticCreateNote")
-	public ResponseEntity<Response> createNote(@RequestBody Note note) throws IOException {
-		Response response=elasticSearchServiceImpl.createNote(note);
-		return new ResponseEntity<Response>(response,HttpStatus.OK);
-	}
-
+//
+//	@PostMapping("/elasticCreateNote")
+//	public String createNote(@RequestBody Note note) throws IOException {
+//		return elasticSearchServiceImpl.createNote(note);
+//		
+//	}
+//
 	@GetMapping("/findById")
 	public Note findById(@RequestParam String id) throws Exception {
 		return elasticSearchServiceImpl.findById(id);
 	}
-
-	@PutMapping("/updateNote")
-	public ResponseEntity<Response> updateNote(@RequestBody Note note) throws Exception {
-		Response response=elasticSearchServiceImpl.updateNote(note);
-		return new ResponseEntity<Response>(response,HttpStatus.ACCEPTED);
-	}
-
+//
+//	@PutMapping("/updateNote")
+//	public ResponseEntity<Response> updateNote(@RequestBody Note note) throws Exception {
+//		Response response=elasticSearchServiceImpl.updateNote(note);
+//		return new ResponseEntity<Response>(response,HttpStatus.ACCEPTED);
+//	}
+//
 	@GetMapping("/searchByTitle")
 	public List<Note> searchByTitle(@RequestHeader String title,@RequestParam String userId) throws Exception {
 		return elasticSearchServiceImpl.findByTitle(title,userId);
 	}
-	
-	@DeleteMapping("/deleteNoteDocument")
-	public String deleteNoteDocument(@RequestParam String id) throws Exception{
-		return elasticSearchServiceImpl.deleteNote(id);
-	}
-	
-	@GetMapping("/findAll")
-	public List<Note> findAll() throws Exception{
-		return elasticSearchServiceImpl.findAll();
-	}
+//	
+//	@DeleteMapping("/deleteNoteDocument")
+//	public String deleteNoteDocument(@RequestParam String id) throws Exception{
+//		return elasticSearchServiceImpl.deleteNote(id);
+//	}
+//	
+//	@GetMapping("/findAll")
+//	public List<Note> findAll() throws Exception{
+//		return elasticSearchServiceImpl.findAll();
+//	}
 }

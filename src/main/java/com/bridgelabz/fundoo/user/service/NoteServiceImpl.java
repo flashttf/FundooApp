@@ -130,8 +130,10 @@ public class NoteServiceImpl implements INoteService {
 			System.out.println("Printing all notes");
 			notesList.add(noteDto);
 			System.out.println(notesList);
+			
 		}
 		return notesList;
+		
 	}
 
 	@Override
