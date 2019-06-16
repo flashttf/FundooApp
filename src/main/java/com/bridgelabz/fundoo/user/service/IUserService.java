@@ -9,6 +9,7 @@ import com.bridgelabz.fundoo.user.model.Response;
 
 public interface IUserService {
 	Response registerUser(UserDto userDto,HttpServletRequest requestUrl);
+	Response validateEmail(String token);
 	Response loginUser(LoginDto loginDto);
 	Response forgotPassword(LoginDto loginDto);
 	Response resetPassword(String token,ForgotPasswordDto forgotPasswordDto);

@@ -35,7 +35,7 @@ public class NoteServiceImpl implements INoteService {
 	private Environment environment;
 	
 	@Autowired
-	ElasticSearchServiceImpl elasticService;
+	private IElasticSearchService elasticService;
 
 	@Autowired
 	private IUserRepository iUserRepository;

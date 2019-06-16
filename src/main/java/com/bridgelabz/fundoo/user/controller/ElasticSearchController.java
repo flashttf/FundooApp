@@ -4,11 +4,10 @@ import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,45 +17,45 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bridgelabz.fundoo.user.model.Note;
-import com.bridgelabz.fundoo.user.model.Response;
-import com.bridgelabz.fundoo.user.service.ElasticSearchServiceImpl;
+
+import com.bridgelabz.fundoo.user.service.IElasticSearchService;
 
 @RestController
 @RequestMapping("/elasticsearch")
 public class ElasticSearchController {
 
 	@Autowired
-	private ElasticSearchServiceImpl elasticSearchServiceImpl;
-//
-//	@PostMapping("/elasticCreateNote")
-//	public String createNote(@RequestBody Note note) throws IOException {
-//		return elasticSearchServiceImpl.createNote(note);
-//		
-//	}
-//
+	private IElasticSearchService elasticSearchService;
+
+	@PostMapping("/elasticCreateNote")
+	public String createNote(@RequestBody Note note) throws IOException {
+		return elasticSearchService.createNote(note);
+		
+	}
+
 	@GetMapping("/findById")
 	public Note findById(@RequestParam String id) throws Exception {
-		return elasticSearchServiceImpl.findById(id);
+		return elasticSearchService.findById(id);
 	}
-//
-//	@PutMapping("/updateNote")
-//	public ResponseEntity<Response> updateNote(@RequestBody Note note) throws Exception {
-//		Response response=elasticSearchServiceImpl.updateNote(note);
-//		return new ResponseEntity<Response>(response,HttpStatus.ACCEPTED);
-//	}
-//
+
+	@PutMapping("/updateNote")
+	public String updateNote(@RequestBody Note note) throws Exception {
+		return elasticSearchService.updateNote(note);
+		
+	}
+
 	@GetMapping("/searchByTitle")
 	public List<Note> searchByTitle(@RequestHeader String title,@RequestParam String userId) throws Exception {
-		return elasticSearchServiceImpl.findByTitle(title,userId);
+		return elasticSearchService.findByTitle(title,userId);
 	}
-//	
-//	@DeleteMapping("/deleteNoteDocument")
-//	public String deleteNoteDocument(@RequestParam String id) throws Exception{
-//		return elasticSearchServiceImpl.deleteNote(id);
-//	}
-//	
-//	@GetMapping("/findAll")
-//	public List<Note> findAll() throws Exception{
-//		return elasticSearchServiceImpl.findAll();
-//	}
+	
+	@DeleteMapping("/deleteNoteDocument")
+	public String deleteNoteDocument(@RequestParam String id) throws Exception{
+		return elasticSearchService.deleteNote(id);
+	}
+	
+	@GetMapping("/findAll")
+	public List<Note> findAll() throws Exception{
+		return elasticSearchService.findAll();
+	}
 }

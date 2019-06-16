@@ -16,38 +16,38 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.bridgelabz.fundoo.user.dto.LabelDto;
 import com.bridgelabz.fundoo.user.model.Response;
-import com.bridgelabz.fundoo.user.repository.ILabelRepository;
-import com.bridgelabz.fundoo.user.service.LabelServiceImpl;
+
+import com.bridgelabz.fundoo.user.service.ILabelService;
 
 @RestController
 @RequestMapping("/label")
 public class LabelController {
-	
+
 	@Autowired
-	private LabelServiceImpl labelServiceImpl;
-	
+	private ILabelService labelService;
+
 	@PostMapping("/create")
-	public ResponseEntity<Response> createLabel(@RequestHeader String token,@RequestBody LabelDto labelDto){
-		Response response=labelServiceImpl.createLabel(token, labelDto);
-		return new ResponseEntity<Response>(response,HttpStatus.OK);
+	public ResponseEntity<Response> createLabel(@RequestHeader String token, @RequestBody LabelDto labelDto) {
+		Response response = labelService.createLabel(token, labelDto);
+		return new ResponseEntity<Response>(response, HttpStatus.OK);
 	}
-	
+
 	@PutMapping("/update")
-	public ResponseEntity<Response> updateLabel(@RequestBody LabelDto labelDto,@RequestParam String labelId,@RequestHeader String token){
-		Response response=labelServiceImpl.updateLabel(labelDto, labelId, token);
-		return new ResponseEntity<Response>(response,HttpStatus.OK);
+	public ResponseEntity<Response> updateLabel(@RequestBody LabelDto labelDto, @RequestParam String labelId,
+			@RequestHeader String token) {
+		Response response = labelService.updateLabel(labelDto, labelId, token);
+		return new ResponseEntity<Response>(response, HttpStatus.OK);
 	}
-	
+
 	@DeleteMapping("/delete")
-	public ResponseEntity<Response> deleteLabel(@RequestHeader String token,@RequestParam String labelId){
-		Response response=labelServiceImpl.deleteLabel(token, labelId);
-		return new ResponseEntity<Response>(response,HttpStatus.OK);
+	public ResponseEntity<Response> deleteLabel(@RequestHeader String token, @RequestParam String labelId) {
+		Response response = labelService.deleteLabel(token, labelId);
+		return new ResponseEntity<Response>(response, HttpStatus.OK);
 	}
-	
-	
+
 	@PostMapping("/readAll")
-	public  List<LabelDto> readLabel(@RequestHeader String token){
-		List<LabelDto> label=labelServiceImpl.readLabel(token);
+	public List<LabelDto> readLabel(@RequestHeader String token) {
+		List<LabelDto> label = labelService.readLabel(token);
 		return label;
 	}
 }

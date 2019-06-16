@@ -3,14 +3,14 @@ package com.bridgelabz.fundoo.user.service;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.constraints.Email;
+
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Component;
+
 
 
 import com.bridgelabz.fundoo.user.dto.ForgotPasswordDto;
@@ -80,7 +80,8 @@ public class UserServiceImpl implements IUserService {
 
 		}
 	}
-
+	
+	@Override
 	public Response validateEmail(String token) {
 		String id = TokenUtility.verifyToken(token);
 		Optional<User> user = userRepository.findByUserId(id);

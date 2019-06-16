@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.lucene.search.join.ScoreMode;
+
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.get.GetRequest;
@@ -25,11 +25,12 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
+
 import org.springframework.stereotype.Service;
 
 import com.bridgelabz.fundoo.user.model.Note;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 
 @Service
 public class ElasticSearchServiceImpl implements IElasticSearchService {
@@ -39,9 +40,6 @@ public class ElasticSearchServiceImpl implements IElasticSearchService {
 
 	@Autowired
 	private RestHighLevelClient client;
-
-	@Autowired
-	Environment environment;
 
 	@Autowired
 	private ObjectMapper objectMapper;
@@ -72,8 +70,7 @@ public class ElasticSearchServiceImpl implements IElasticSearchService {
 
 		UpdateResponse updateResponse = client.update(updateRequest, RequestOptions.DEFAULT);
 		return updateResponse.getResult().name();
-//		Response response=ResponseUtility.getResponse(202, "",environment.getProperty("elastic.noteUpdate.success"));
-//		return response;
+
 	}
 
 	@Override
