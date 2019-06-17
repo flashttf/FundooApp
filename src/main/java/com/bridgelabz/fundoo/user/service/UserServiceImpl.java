@@ -53,7 +53,7 @@ public class UserServiceImpl implements IUserService {
 		boolean isEmail = userRepository.findByEmail(userDto.getEmail()).isPresent();
 
 		if (isEmail) {
-			Response response = ResponseUtility.getResponse(204, "0", "c");
+			Response response = ResponseUtility.getResponse(204, "", environment.getProperty("user.mail.alreadyPresent"));
 			return response;
 		} else {
 			User user = modelMapper.map(userDto, User.class);
@@ -115,15 +115,16 @@ public class UserServiceImpl implements IUserService {
 			}
 
 			boolean isPassword = encryptUtil.isPassword(loginDto, user);
-			if (!isPassword) {
-				Response response = ResponseUtility.getResponse(200, "0",
-						environment.getProperty("user.login.invalidPassword"));
+			if (isPassword) {
+				String token= TokenUtility.generateToken(user.getUserId());
+				Response response = ResponseUtility.getResponse(200,token,
+						environment.getProperty("user.login.success"));
 				return response;
 			}
 			user.setUpdatedTimeStamp(Utility.currentDate());
 			userRepository.save(user);
 
-			Response response = ResponseUtility.getResponse(204, "", environment.getProperty("user.login.success"));
+			Response response = ResponseUtility.getResponse(204, "", environment.getProperty("user.login.invalidPassword"));
 			return response;
 		
 
