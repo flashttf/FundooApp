@@ -11,6 +11,6 @@ public interface IUserService {
 	Response registerUser(UserDto userDto,HttpServletRequest requestUrl);
 	Response validateEmail(String token);
 	Response loginUser(LoginDto loginDto);
-	Response forgotPassword(LoginDto loginDto);
+	Response forgotPassword(String emailId);
 	Response resetPassword(String token,ForgotPasswordDto forgotPasswordDto);
 }

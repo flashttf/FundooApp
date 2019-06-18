@@ -105,12 +105,12 @@ public class UserServiceImpl implements IUserService {
 		boolean isEmail = userRepository.findByEmail(loginDto.getEmail()).isPresent();
 		
 			if (!isEmail) {
-				Response response = ResponseUtility.getResponse(204, "0", environment.getProperty("user.login.failed"));
+				Response response = ResponseUtility.getResponse(202, "0", environment.getProperty("user.login.emailNotRegistered"));
 				return response;
 			}
 			User user = userRepository.findByEmail(loginDto.getEmail()).get();
 			if(user.isVerified()==false) {
-				Response response=ResponseUtility.getResponse(204, "", environment.getProperty("user.login.isVerified"));
+				Response response=ResponseUtility.getResponse(203, "", environment.getProperty("user.login.isVerified"));
 				return response;
 			}
 
@@ -131,23 +131,29 @@ public class UserServiceImpl implements IUserService {
 	}
 
 	@Override
-	public Response forgotPassword(LoginDto loginDto) {
+	public Response forgotPassword(String emailId) {
+//		System.out.println(emailId);
 		Mail email=new Mail();
-		Optional<User> user=userRepository.findByEmail(loginDto.getEmail());
+		Optional<User> user=userRepository.findByEmail(emailId);
+		
 		if(user.isPresent()) {
+//			System.out.println(user.get().getEmail());
 			email.setSenderEmail("pawansp72@gmail.com");
-			email.setTo(loginDto.getEmail());
+			email.setTo(emailId);
 			email.setSubject("Fundoo Password Reset Link");
 			try {
-				email.setBody(mailService.getLink("http://localhost:9091/users/resetpassword/", user.get().getUserId()));
+				email.setBody(mailService.getLink("http://localhost:4200/resetpassword/", user.get().getUserId()));
 			} catch (Exception e) {
-				System.out.println("Exception Occured"+e.getMessage());
+				System.out.println("Exception Occured "+e.getMessage());
 			}
+			String token=TokenUtility.generateToken(user.get().getUserId());
 			mailService.send(email);
-			Response response=ResponseUtility.getResponse(200, "", environment.getProperty("user.forgot.password"));
+//			System.out.println("ForgotPass Mail Sent");
+			Response response=ResponseUtility.getResponse(200, token, environment.getProperty("user.forgot.password.success"));
 			return  response;
 			
 		}else {
+			System.out.println("ForgotPass Mail Failed");
 			Response response=ResponseUtility.getResponse(204, "0", environment.getProperty("user.forgot.password.fail"));
 			return response;
 		}

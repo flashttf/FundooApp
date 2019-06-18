@@ -9,9 +9,11 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bridgelabz.fundoo.user.dto.ForgotPasswordDto;
@@ -46,9 +48,10 @@ public class UserController {
 		return new ResponseEntity<Response>(response, HttpStatus.OK);
 	}
 
-	@PostMapping("/forgotpassword")
-	public ResponseEntity<Response> forgotPassword(@RequestBody LoginDto loginDto) {
-		Response response = userService.forgotPassword(loginDto);
+	@PutMapping("/forgotpassword")
+	public ResponseEntity<Response> forgotPassword(@RequestParam String emailId) {
+//		System.out.println(emailId);
+		Response response = userService.forgotPassword(emailId);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
