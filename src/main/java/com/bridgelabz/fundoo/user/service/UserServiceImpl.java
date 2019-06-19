@@ -58,7 +58,7 @@ public class UserServiceImpl implements IUserService {
 		} else {
 			User user = modelMapper.map(userDto, User.class);
 			String token = TokenUtility.generateToken(user.getUserId());
-			user.setUserPassword(encryptUtil.encryptPassword(userDto.getPassword()));
+			user.setUserPassword(encryptUtil.encryptPassword(userDto.getUserPassword()));
 			user.setToken(token);
 			user.setRegisteredTimeStamp(Utility.currentDate());
 			user.setUpdatedTimeStamp(Utility.currentDate());
@@ -162,17 +162,18 @@ public class UserServiceImpl implements IUserService {
 	@Override
 	public Response resetPassword(String token, ForgotPasswordDto forgotPasswordDto) {
 		String id=TokenUtility.verifyToken(token);
-		System.out.println(forgotPasswordDto.getPassword());
+//		System.out.println(forgotPasswordDto.getPassword());
 		Optional<User> user=userRepository.findByUserId(id);
 		if(user.isPresent()) {
-			user.get().setUserPassword(encryptUtil.encryptPassword(forgotPasswordDto.getPassword()));
+//			System.out.println(user.get().getEmail());
+			user.get().setUserPassword(encryptUtil.encryptPassword(forgotPasswordDto.getUserPassword()));
 			user.get().setUpdatedTimeStamp(Utility.currentDate());
 			userRepository.save(user.get());
 			Response response=ResponseUtility.getResponse(200, "", environment.getProperty("user.reset.resetPassword"));
 			return response;
 			
 		}else {
-			Response response=ResponseUtility.getResponse(500, "0", environment.getProperty("user.reset.resetpassword.fail"));
+			Response response=ResponseUtility.getResponse(204, "0", environment.getProperty("user.reset.resetpassword.fail"));
 			return response;
 		}
 	}

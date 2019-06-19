@@ -8,24 +8,29 @@ public class ForgotPasswordDto {
 
 	}
 
-	public ForgotPasswordDto(String password) {
-		super();
-		this.userPassword = password;
+	
 
+	public ForgotPasswordDto(String userPassword) {
+		super();
+		this.userPassword = userPassword;
 	}
+
+
 
 	// --------getters and setters------//
-	public String getPassword() {
-		return userPassword;
-	}
-
-	public void setPassword(String password) {
-		this.userPassword = password;
-	}
+	
 
 	@Override
 	public String toString() {
-		return "ForgotPasswordDto [password=" + userPassword + "]";
+		return "ForgotPasswordDto [userPassword=" + userPassword + "]";
+	}
+
+	public String getUserPassword() {
+		return userPassword;
+	}
+
+	public void setUserPassword(String userPassword) {
+		this.userPassword = userPassword;
 	}
 
 }

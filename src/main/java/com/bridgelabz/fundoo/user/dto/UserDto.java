@@ -4,7 +4,7 @@ public class UserDto {
 	private String userName;
 	private String phoneNumber;
 	private String email;
-	private String password;
+	private String userPassword;
 
 	// -------------getters and setters---------------//
 
@@ -32,12 +32,14 @@ public class UserDto {
 		this.email = email;
 	}
 
-	public String getPassword() {
-		return password;
+	public String getUserPassword() {
+		return userPassword;
 	}
 
-	public void setPassword(String password) {
-		this.password = password;
+	public void setUserPassword(String userPassword) {
+		this.userPassword = userPassword;
 	}
+
+	
 
 }
