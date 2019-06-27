@@ -28,7 +28,7 @@ public class ApplicationConfiguration {
 	@Bean(destroyMethod = "close")
 	public RestHighLevelClient client() {
 		RestHighLevelClient client = new RestHighLevelClient(
-				RestClient.builder(new HttpHost("localhost", 9200, "http")));
+				RestClient.builder(new HttpHost("localhost", 9200, "http")));//setting elastic search localhost
 		return client;
 	}
 

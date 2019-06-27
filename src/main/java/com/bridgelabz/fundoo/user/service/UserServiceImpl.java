@@ -9,8 +9,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Component;
 
+import org.springframework.stereotype.Component;
 
 
 import com.bridgelabz.fundoo.user.dto.ForgotPasswordDto;
@@ -21,9 +21,10 @@ import com.bridgelabz.fundoo.user.model.Response;
 import com.bridgelabz.fundoo.user.model.User;
 import com.bridgelabz.fundoo.user.repository.IUserRepository;
 import com.bridgelabz.fundoo.utility.EncryptionUtility;
+import com.bridgelabz.fundoo.utility.ITokenGenerator;
 import com.bridgelabz.fundoo.utility.MailService;
 import com.bridgelabz.fundoo.utility.ResponseUtility;
-import com.bridgelabz.fundoo.utility.TokenUtility;
+
 import com.bridgelabz.fundoo.utility.Utility;
 
 @Component
@@ -44,7 +45,10 @@ public class UserServiceImpl implements IUserService {
 
 	@Autowired
 	private Environment environment;
-
+	
+	@Autowired
+	private ITokenGenerator tokenGenerator;
+	
 	@Override
 	public Response registerUser(UserDto userDto, HttpServletRequest request) {
 		System.out.println(request);
@@ -53,25 +57,23 @@ public class UserServiceImpl implements IUserService {
 		boolean isEmail = userRepository.findByEmail(userDto.getEmail()).isPresent();
 
 		if (isEmail) {
-			Response response = ResponseUtility.getResponse(204, "", environment.getProperty("user.mail.alreadyPresent"));
+			Response response = ResponseUtility.getResponse(200, "", environment.getProperty("user.mail.alreadyPresent"));
 			return response;
 		} else {
 			User user = modelMapper.map(userDto, User.class);
-			String token = TokenUtility.generateToken(user.getUserId());
+			String token = tokenGenerator.generateToken(user.getUserId());
 			user.setUserPassword(encryptUtil.encryptPassword(userDto.getUserPassword()));
-			user.setToken(token);
+			
 			user.setRegisteredTimeStamp(Utility.currentDate());
 			user.setUpdatedTimeStamp(Utility.currentDate());
-			User status = userRepository.save(user);
+			userRepository.save(user);
+			StringBuffer requestUrl=request.getRequestURL();
+			String activationUrl=requestUrl.substring(0,requestUrl.lastIndexOf("/"))+"/activation/"+token;
 			email.setSenderEmail("pawansp72@gmail.com");
 			email.setTo(user.getEmail());
 			email.setSubject("Verification");
-			email.setBody("body");
-			try {
-				email.setBody(mailService.getLink("http://localhost:9091/users/activation/", status.getUserId()));
-			} catch (Exception e) {
-				System.out.println("Exception occured" + e.getMessage());
-			}
+			email.setBody("Verification Link: \n"+activationUrl);
+			
 			mailService.send(email);
 
 			Response response = ResponseUtility.getResponse(200, token,
@@ -83,18 +85,18 @@ public class UserServiceImpl implements IUserService {
 	
 	@Override
 	public Response validateEmail(String token) {
-		String id = TokenUtility.verifyToken(token);
+		String id = tokenGenerator.verifyToken(token);
 		Optional<User> user = userRepository.findByUserId(id);
 		if (user.isPresent()) {
 			user.get().setVerified(true);
 			user.get().setUpdatedTimeStamp(Utility.currentDate());
 			userRepository.save(user.get());
 
-			Response response = ResponseUtility.getResponse(200, token,
+			Response response = ResponseUtility.getResponse(200, "",
 					environment.getProperty("user.activate.success"));
 			return response;
 		} else {
-			System.out.println("Problem while Decoding");
+			
 			Response response = ResponseUtility.getResponse(500, "0", "status message");
 			return response;
 		}
@@ -116,7 +118,7 @@ public class UserServiceImpl implements IUserService {
 
 			boolean isPassword = encryptUtil.isPassword(loginDto, user);
 			if (isPassword) {
-				String token= TokenUtility.generateToken(user.getUserId());
+				String token= tokenGenerator.generateToken(user.getUserId());
 				Response response = ResponseUtility.getResponse(200,token,
 						environment.getProperty("user.login.success"));
 				return response;
@@ -146,7 +148,7 @@ public class UserServiceImpl implements IUserService {
 			} catch (Exception e) {
 				System.out.println("Exception Occured "+e.getMessage());
 			}
-			String token=TokenUtility.generateToken(user.get().getUserId());
+			String token=tokenGenerator.generateToken(user.get().getUserId());
 			mailService.send(email);
 //			System.out.println("ForgotPass Mail Sent");
 			Response response=ResponseUtility.getResponse(200, token, environment.getProperty("user.forgot.password.success"));
@@ -161,7 +163,7 @@ public class UserServiceImpl implements IUserService {
 
 	@Override
 	public Response resetPassword(String token, ForgotPasswordDto forgotPasswordDto) {
-		String id=TokenUtility.verifyToken(token);
+		String id=tokenGenerator.verifyToken(token);
 //		System.out.println(forgotPasswordDto.getPassword());
 		Optional<User> user=userRepository.findByUserId(id);
 		if(user.isPresent()) {

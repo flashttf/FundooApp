@@ -24,8 +24,7 @@ import com.bridgelabz.fundoo.user.service.IUserService;
 
 @RestController
 @RequestMapping("/users")
-@CrossOrigin(origins = "*",allowedHeaders = "*")
-//,exposedHeaders = {"jwtToken"})
+@CrossOrigin(origins = "*",allowedHeaders = "*",exposedHeaders = {"token"})
 public class UserController {
 
 	@Autowired
@@ -33,6 +32,7 @@ public class UserController {
 
 	@PostMapping("/register")
 	public ResponseEntity<Response> register(@RequestBody UserDto userDto, HttpServletRequest httpServletRequest) {
+//		System.out.println(userDto.getEmail()+"\t"+userDto.getUserPassword()+"\t"+userDto.getUserName());
 		Response response = userService.registerUser(userDto, httpServletRequest);
 		return new ResponseEntity<Response>(response, HttpStatus.OK);
 	}
@@ -56,12 +56,12 @@ public class UserController {
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
-	@PutMapping("/resetpassword/{jwtToken}")
-	public ResponseEntity<Response> resetPassword(@RequestHeader String jwtToken,
+	@PutMapping("/resetpassword/{token}")
+	public ResponseEntity<Response> resetPassword(@PathVariable String token,
 			 @RequestBody ForgotPasswordDto forgotPasswordDto) {
 //		System.out.println(forgotPasswordDto.getUserPassword());
-		System.out.println("Token"+jwtToken);
-		Response response = userService.resetPassword(jwtToken, forgotPasswordDto);
+//		System.out.println("Token"+token);
+		Response response = userService.resetPassword(token, forgotPasswordDto);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 
 	}

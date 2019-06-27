@@ -1,35 +1,55 @@
 package com.bridgelabz.fundoo.utility;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+
 import org.springframework.stereotype.Component;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.algorithms.Algorithm;
-
-import com.auth0.jwt.interfaces.Claim;
-import com.auth0.jwt.interfaces.DecodedJWT;
-import com.auth0.jwt.interfaces.Verification;
 
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+
+	
 
 @Component
-public class TokenUtility {
+public class TokenUtility implements ITokenGenerator{
 	private static String secretPin="flash908642018";
 	
-	public static String generateToken(String id) {
-		Algorithm algorithm=Algorithm.HMAC256(secretPin);
-		String token=JWT.create().withClaim("ID", id).sign(algorithm);
+	@Override
+	public String generateToken(String id) {
+//		Algorithm algorithm=Algorithm.HMAC256(secretPin);
+//		String token=JWT.create().withClaim("ID", id).sign(algorithm);
+//		return token;
+		
+		Calendar calendar=Calendar.getInstance(Locale.US);
+		Calendar calendar1=Calendar.getInstance(Locale.US);
+		calendar1.setTime(calendar.getTime());
+		calendar1.add(Calendar.HOUR_OF_DAY, 8);
+		String token=Jwts.builder().setSubject("FundooNotes").setIssuedAt(calendar.getTime())
+				.setExpiration(new Date(System.currentTimeMillis() + 86400000)).setId(id)
+				.signWith(SignatureAlgorithm.HS256, secretPin).compact();
 		return token;
+		
 	}
 	
-	public static String verifyToken(String token) {
-		String id;
-		Verification verification=JWT.require(Algorithm.HMAC256(secretPin));
-		JWTVerifier jwtVerifier=verification.build();
-		DecodedJWT decodedJWT = jwtVerifier.verify(token);
-		Claim claim=decodedJWT.getClaim("ID");
-		id=claim.asString();
-		return id;
+	
+	@Override
+	public  String verifyToken(String token) {
+//		String id;
+//		Verification verification=JWT.require(Algorithm.HMAC256(secretPin));
+//		JWTVerifier jwtVerifier=verification.build();
+//		DecodedJWT decodedJWT = jwtVerifier.verify(token);
+//		Claim claim=decodedJWT.getClaim("ID");
+//		id=claim.asString();
+//		return id;
+		
+		Jws<Claims> claims=Jwts.parser().setSigningKey(secretPin).parseClaimsJws(token);
+		String userId=	claims.getBody().getId();
+		return userId;
 	}
 	
 }

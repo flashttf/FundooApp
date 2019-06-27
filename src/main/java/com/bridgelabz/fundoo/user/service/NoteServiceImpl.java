@@ -20,8 +20,8 @@ import com.bridgelabz.fundoo.user.model.User;
 import com.bridgelabz.fundoo.user.repository.INoteRepository;
 import com.bridgelabz.fundoo.user.repository.IUserRepository;
 import com.bridgelabz.fundoo.user.repository.ILabelRepository;
+import com.bridgelabz.fundoo.utility.ITokenGenerator;
 import com.bridgelabz.fundoo.utility.ResponseUtility;
-import com.bridgelabz.fundoo.utility.TokenUtility;
 import com.bridgelabz.fundoo.utility.Utility;
 
 @Service
@@ -45,10 +45,13 @@ public class NoteServiceImpl implements INoteService {
 
 	@Autowired
 	private ILabelRepository iLabelRepository;
-
+	
+	@Autowired
+	private ITokenGenerator tokenGenerator;
+	
 	@Override
 	public Response createNote(NoteDto noteDto, String token) {
-		String id = TokenUtility.verifyToken(token);
+		String id = tokenGenerator.verifyToken(token);
 		Optional<User> isUser = iUserRepository.findByUserId(id);
 		System.err.println(isUser.toString());
 		if (isUser.isPresent()) {
@@ -75,7 +78,7 @@ public class NoteServiceImpl implements INoteService {
 
 	@Override
 	public Response updateNote(NoteDto noteDto, String token, String noteId) {
-		String id = TokenUtility.verifyToken(token);
+		String id = tokenGenerator.verifyToken(token);
 		Optional<Note> isNote = iNoteRepository.findByNoteIdAndUserId(noteId, id);
 		if (isNote.isPresent()) {
 			isNote.get().setCreatedTime(Utility.currentDate());
@@ -101,7 +104,7 @@ public class NoteServiceImpl implements INoteService {
 
 	@Override
 	public Response deleteNote(String token, String noteId) {
-		String id = TokenUtility.verifyToken(token);
+		String id = tokenGenerator.verifyToken(token);
 		Optional<Note> isNote = iNoteRepository.findByNoteIdAndUserId(noteId, id);
 		if (isNote.isPresent()) {
 			
@@ -122,7 +125,7 @@ public class NoteServiceImpl implements INoteService {
 
 	@Override
 	public List<NoteDto> read(String token) {
-		String userId = TokenUtility.verifyToken(token);
+		String userId = tokenGenerator.verifyToken(token);
 		List<Note> notes = iNoteRepository.findByUserId(userId);
 		List<NoteDto> notesList = new ArrayList<>();
 		for (Note userNotes : notes) {
@@ -138,7 +141,7 @@ public class NoteServiceImpl implements INoteService {
 
 	@Override
 	public Response setArchive(String token, String noteId) {
-		String id = TokenUtility.verifyToken(token);
+		String id = tokenGenerator.verifyToken(token);
 		Optional<Note> note = iNoteRepository.findByNoteIdAndUserId(noteId, id);
 		if (note.isPresent()) {
 			note.get().setPin(false);
@@ -158,7 +161,7 @@ public class NoteServiceImpl implements INoteService {
 
 	@Override
 	public Response setTrash(String token, String noteId) {
-		String id = TokenUtility.verifyToken(token);
+		String id = tokenGenerator.verifyToken(token);
 		Optional<Note> note = iNoteRepository.findByNoteIdAndUserId(noteId, id);
 		if (note.isPresent()) {
 			note.get().setTrash(true);
@@ -173,7 +176,7 @@ public class NoteServiceImpl implements INoteService {
 
 	@Override
 	public Response setPin(String token, String noteId) {
-		String id = TokenUtility.verifyToken(token);
+		String id = tokenGenerator.verifyToken(token);
 		Optional<Note> note = iNoteRepository.findByNoteIdAndUserId(noteId, id);
 		if (note.isPresent()) {
 			note.get().setArchive(false);
@@ -190,7 +193,7 @@ public class NoteServiceImpl implements INoteService {
 
 	@SuppressWarnings("unused")
 	public Response addLabelToNote(String noteId, String token, String labelId) {
-		String id = TokenUtility.verifyToken(token);
+		String id = tokenGenerator.verifyToken(token);
 		Optional<User> optionalUser = iUserRepository.findById(id);
 		Optional<Note> optionalNote = iNoteRepository.findById(noteId);
 		Optional<Label> optionalLabel = iLabelRepository.findById(labelId);
@@ -233,7 +236,7 @@ public class NoteServiceImpl implements INoteService {
 
 	@Override
 	public Response removeLabelFromNote(String noteId, String token, String labelId) {
-		String id = TokenUtility.verifyToken(token);
+		String id = tokenGenerator.verifyToken(token);
 		Optional<User> optionalUser = iUserRepository.findById(id);
 		Optional<Note> optionalNote = iNoteRepository.findById(noteId);
 		Optional<Label> optionalLabel = iLabelRepository.findById(labelId);

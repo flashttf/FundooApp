@@ -25,17 +25,15 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.bridgelabz.fundoo.user.model.Response;
 import com.bridgelabz.fundoo.user.model.User;
 import com.bridgelabz.fundoo.user.repository.IUserRepository;
+import com.bridgelabz.fundoo.utility.ITokenGenerator;
 import com.bridgelabz.fundoo.utility.ResponseUtility;
-import com.bridgelabz.fundoo.utility.TokenUtility;
+
+
 
 @Service
 public class AmazonClient {
 
-	@Autowired
-	private IUserRepository iUserRepository;
 	
-	@Autowired
-	private Environment environment;
 
 	private AmazonS3 s3Client;
 
@@ -50,6 +48,15 @@ public class AmazonClient {
 
 	@Value("${amazonProperties.bucketName}")
 	private String bucketName;
+	
+	@Autowired
+	private IUserRepository iUserRepository;
+	
+	@Autowired
+	private Environment environment;
+	
+	@Autowired
+	private ITokenGenerator tokenGenerator;
 
 	@SuppressWarnings("deprecation")
 	@PostConstruct
@@ -94,7 +101,7 @@ public class AmazonClient {
 	 * profile image.
 	 */
 	public Response uploadFile(MultipartFile multiPartFile, String token) throws IOException {
-		String id = TokenUtility.verifyToken(token);
+		String id = tokenGenerator.verifyToken(token);
 		Optional<User> optionalUser = iUserRepository.findByUserId(id);
 		if (optionalUser.isPresent()) {
 			User user = optionalUser.get();
@@ -119,7 +126,7 @@ public class AmazonClient {
 	 * bucket name and a filename. Thats why we retrieve filename from the Url.
 	 */
 	public Response deleteFileFromS3Bucket(String fileUrl, String token) {
-		String id = TokenUtility.verifyToken(token);
+		String id = tokenGenerator.verifyToken(token);
 		Optional<User> optionalUser = iUserRepository.findByUserId(id);
 		if (optionalUser.isPresent()) {
 			User user=optionalUser.get();

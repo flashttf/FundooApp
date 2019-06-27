@@ -1,4 +1,4 @@
-package com.bridgelabz.fundoo.utility;
+	package com.bridgelabz.fundoo.utility;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,7 +19,7 @@ public class EncryptionUtility {
 		return passwordEncoder.encode(password);
 	}
 
-	// matching password
+	// matching login password with registered password
 	public boolean isPassword(LoginDto loginDto,User user) {
 		return passwordEncoder.matches(loginDto.getPassword(),user.getUserPassword());
 	}

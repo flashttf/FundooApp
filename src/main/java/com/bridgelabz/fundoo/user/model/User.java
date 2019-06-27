@@ -26,8 +26,7 @@ public class User {
 
 	private boolean isVerified;
 
-	@NonNull
-	private String token;
+	
 	
 	@DBRef
 	private List<Note> notes;
@@ -129,13 +128,7 @@ public class User {
 		this.isVerified = isVerified;
 	}
 
-	public String getToken() {
-		return token;
-	}
-
-	public void setToken(String token) {
-		this.token = token;
-	}
+	
 
 	public List<Note> getNotes() {
 		return notes;

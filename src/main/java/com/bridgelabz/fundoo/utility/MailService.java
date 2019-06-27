@@ -13,6 +13,9 @@ public class MailService {
 	private JavaMailSender javaMailSender;
 
 	@Autowired
+	private ITokenGenerator tokenGenerator;
+	
+	@Autowired
 	public MailService(JavaMailSender javaMailSender) {
 		this.javaMailSender = javaMailSender;
 	}
@@ -28,6 +31,6 @@ public class MailService {
 	}
 	
 	public String getLink(String link,String id) {
-		return link+TokenUtility.generateToken(id);
+		return link+tokenGenerator.generateToken(id);
 	}
 }
