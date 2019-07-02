@@ -5,7 +5,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,6 +23,7 @@ import com.bridgelabz.fundoo.user.service.ILabelService;
 
 @RestController
 @RequestMapping("/label")
+@CrossOrigin(origins = "*",allowedHeaders = "*",exposedHeaders = {"token"})
 public class LabelController {
 
 	@Autowired
@@ -45,7 +48,7 @@ public class LabelController {
 		return new ResponseEntity<Response>(response, HttpStatus.OK);
 	}
 
-	@PostMapping("/readAll")
+	@GetMapping("/readAll")
 	public List<LabelDto> readLabel(@RequestHeader String token) {
 		List<LabelDto> label = labelService.readLabel(token);
 		return label;
