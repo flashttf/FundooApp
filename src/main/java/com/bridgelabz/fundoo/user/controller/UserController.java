@@ -32,7 +32,6 @@ public class UserController {
 
 	@PostMapping("/register")
 	public ResponseEntity<Response> register(@RequestBody UserDto userDto, HttpServletRequest httpServletRequest) {
-//		System.out.println(userDto.getEmail()+"\t"+userDto.getUserPassword()+"\t"+userDto.getUserName());
 		Response response = userService.registerUser(userDto, httpServletRequest);
 		return new ResponseEntity<Response>(response, HttpStatus.OK);
 	}
@@ -51,7 +50,6 @@ public class UserController {
 
 	@PutMapping("/forgotpassword")
 	public ResponseEntity<Response> forgotPassword(@RequestParam String emailId) {
-//		System.out.println(emailId);
 		Response response = userService.forgotPassword(emailId);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
@@ -59,8 +57,6 @@ public class UserController {
 	@PutMapping("/resetpassword/{token}")
 	public ResponseEntity<Response> resetPassword(@PathVariable String token,
 			 @RequestBody ForgotPasswordDto forgotPasswordDto) {
-//		System.out.println(forgotPasswordDto.getUserPassword());
-//		System.out.println("Token"+token);
 		Response response = userService.resetPassword(token, forgotPasswordDto);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 

@@ -41,7 +41,6 @@ public class ElasticSearchController {
 	@PutMapping("/updateNote")
 	public String updateNote(@RequestBody Note note) throws Exception {
 		return elasticSearchService.updateNote(note);
-		
 	}
 
 	@GetMapping("/searchByTitle")

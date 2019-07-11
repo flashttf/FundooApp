@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bridgelabz.fundoo.user.dto.NoteDto;
+import com.bridgelabz.fundoo.user.model.Note;
 import com.bridgelabz.fundoo.user.model.Response;
 import com.bridgelabz.fundoo.user.service.INoteService;
 
@@ -38,31 +39,32 @@ public class NoteController {
 
 	@PutMapping("/update")
 	public ResponseEntity<Response> updateNote(@RequestBody NoteDto noteDto, @RequestHeader String token,
-			@RequestParam(value = "noteId") String noteId) {
+			@RequestParam String noteId) {
 		Response response = noteService.updateNote(noteDto, token, noteId);
 		return new ResponseEntity<Response>(response, HttpStatus.OK);
 	}
 
 	@DeleteMapping("/delete")
 	public ResponseEntity<Response> deleteNote(@RequestHeader String token,
-			@RequestParam(value = "noteId") String noteId) {
+			@RequestParam String noteId) {
+		
 		Response response = noteService.deleteNote(token, noteId);
 		return new ResponseEntity<Response>(response, HttpStatus.OK);
 	}
 	
 	@GetMapping("/readNote")
-	public List<NoteDto> readNote(@RequestHeader String token){
-		List<NoteDto> listNoteDtos=noteService.read(token);
-		return listNoteDtos;
+	public List<Note> readNote(@RequestHeader String token){
+		List<Note> notes=noteService.read(token);
+		return notes;
 	}
-
-	@PostMapping("/archive")
+	
+	@DeleteMapping("/archive")
 	public ResponseEntity<Response> isArchive(@RequestHeader String token, @RequestParam String noteId) {
 		Response response = noteService.setArchive(token, noteId);
 		return new ResponseEntity<Response>(response, HttpStatus.OK);
 	}
 
-	@PostMapping("/trash")
+	@DeleteMapping("/trash")
 	public ResponseEntity<Response> isTrash(@RequestHeader String token, @RequestParam String noteId) {
 		Response response = noteService.setTrash(token, noteId);
 		return new ResponseEntity<Response>(response, HttpStatus.OK);

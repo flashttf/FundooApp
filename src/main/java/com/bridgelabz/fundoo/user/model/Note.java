@@ -19,7 +19,8 @@ public class Note {
 	
 	@DBRef
 	private List<Label> labels;
-
+	
+	
 	public String getNoteId() {
 		return noteId;
 	}

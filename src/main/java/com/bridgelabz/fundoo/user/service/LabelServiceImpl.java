@@ -105,7 +105,6 @@ public class LabelServiceImpl implements ILabelService {
 		for (Label label : labels) {
 			LabelDto labelDto = modelMapper.map(label, LabelDto.class);
 			labelList.add(labelDto);
-			System.out.println(labelList);
 		}
 		return labelList;
 	}

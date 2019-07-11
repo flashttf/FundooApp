@@ -51,7 +51,7 @@ public class UserServiceImpl implements IUserService {
 	
 	@Override
 	public Response registerUser(UserDto userDto, HttpServletRequest request) {
-		System.out.println(request);
+		
 
 		Mail email = new Mail();
 		boolean isEmail = userRepository.findByEmail(userDto.getEmail()).isPresent();
@@ -134,12 +134,12 @@ public class UserServiceImpl implements IUserService {
 
 	@Override
 	public Response forgotPassword(String emailId) {
-//		System.out.println(emailId);
+
 		Mail email=new Mail();
 		Optional<User> user=userRepository.findByEmail(emailId);
 		
 		if(user.isPresent()) {
-//			System.out.println(user.get().getEmail());
+
 			email.setSenderEmail("pawansp72@gmail.com");
 			email.setTo(emailId);
 			email.setSubject("Fundoo Password Reset Link");
@@ -150,12 +150,12 @@ public class UserServiceImpl implements IUserService {
 			}
 			String token=tokenGenerator.generateToken(user.get().getUserId());
 			mailService.send(email);
-//			System.out.println("ForgotPass Mail Sent");
+
 			Response response=ResponseUtility.getResponse(200, token, environment.getProperty("user.forgot.password.success"));
 			return  response;
 			
 		}else {
-			System.out.println("ForgotPass Mail Failed");
+			
 			Response response=ResponseUtility.getResponse(204, "0", environment.getProperty("user.forgot.password.fail"));
 			return response;
 		}
@@ -164,10 +164,10 @@ public class UserServiceImpl implements IUserService {
 	@Override
 	public Response resetPassword(String token, ForgotPasswordDto forgotPasswordDto) {
 		String id=tokenGenerator.verifyToken(token);
-//		System.out.println(forgotPasswordDto.getPassword());
+
 		Optional<User> user=userRepository.findByUserId(id);
 		if(user.isPresent()) {
-//			System.out.println(user.get().getEmail());
+
 			user.get().setUserPassword(encryptUtil.encryptPassword(forgotPasswordDto.getUserPassword()));
 			user.get().setUpdatedTimeStamp(Utility.currentDate());
 			userRepository.save(user.get());

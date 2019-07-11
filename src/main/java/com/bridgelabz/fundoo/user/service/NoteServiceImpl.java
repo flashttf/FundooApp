@@ -33,7 +33,7 @@ public class NoteServiceImpl implements INoteService {
 
 	@Autowired
 	private Environment environment;
-	
+
 	@Autowired
 	private IElasticSearchService elasticService;
 
@@ -45,10 +45,10 @@ public class NoteServiceImpl implements INoteService {
 
 	@Autowired
 	private ILabelRepository iLabelRepository;
-	
+
 	@Autowired
 	private ITokenGenerator tokenGenerator;
-	
+
 	@Override
 	public Response createNote(NoteDto noteDto, String token) {
 		String id = tokenGenerator.verifyToken(token);
@@ -60,8 +60,20 @@ public class NoteServiceImpl implements INoteService {
 			note.setUserId(user.getUserId());
 			note.setCreatedTime(Utility.currentDate());
 			note.setUpdatedTime(Utility.currentDate());
-			Note saveNote=iNoteRepository.save(note);
-			
+			Note saveNote = iNoteRepository.save(note);
+
+			List<Note> notesList = isUser.get().getNotes();
+			if (notesList != null && !notesList.contains(note)) {
+				notesList.add(note);
+				user.setNotes(notesList);
+				iUserRepository.save(user);
+			} else {
+				List<Note> newNotesList = new ArrayList<Note>();
+				newNotesList.add(note);
+				user.setNotes(newNotesList);
+				iUserRepository.save(user);
+			}
+
 			try {
 				elasticService.createNote(saveNote);
 			} catch (IOException e) {
@@ -85,7 +97,8 @@ public class NoteServiceImpl implements INoteService {
 			isNote.get().setTitle(noteDto.getTitle());
 			isNote.get().setDescription(noteDto.getDescription());
 			isNote.get().setUpdatedTime(Utility.currentDate());
-			Note updatedNote=iNoteRepository.save(isNote.get());
+			Note updatedNote = iNoteRepository.save(isNote.get());
+
 			try {
 				elasticService.updateNote(updatedNote);
 			} catch (Exception e) {
@@ -107,8 +120,21 @@ public class NoteServiceImpl implements INoteService {
 		String id = tokenGenerator.verifyToken(token);
 		Optional<Note> isNote = iNoteRepository.findByNoteIdAndUserId(noteId, id);
 		if (isNote.isPresent()) {
-			
-			iNoteRepository.delete(isNote.get());
+
+			Note note = iNoteRepository.findByNoteIdAndUserId(noteId, id).get();
+			User user = iUserRepository.findById(id).get();
+			List<Note> notes = user.getNotes();
+
+			if (notes.stream().filter(u -> u.getNoteId().equals(note.getNoteId())).findFirst().isPresent()) {
+
+				Note notes1 = notes.stream().filter(u -> u.getNoteId().equals(note.getNoteId())).findFirst().get();
+
+				user.getNotes().remove(notes1);
+
+				iNoteRepository.delete(notes1);
+				iUserRepository.save(user);
+			}
+
 			try {
 				elasticService.deleteNote(noteId);
 			} catch (Exception e) {
@@ -124,19 +150,16 @@ public class NoteServiceImpl implements INoteService {
 	}
 
 	@Override
-	public List<NoteDto> read(String token) {
+	public List<Note> read(String token) {
 		String userId = tokenGenerator.verifyToken(token);
 		List<Note> notes = iNoteRepository.findByUserId(userId);
-		List<NoteDto> notesList = new ArrayList<>();
+		List<Note> notesList = new ArrayList<>();
 		for (Note userNotes : notes) {
-			NoteDto noteDto = modelMapper.map(userNotes, NoteDto.class);
-			System.out.println("Printing all notes");
-			notesList.add(noteDto);
-			System.out.println(notesList);
-			
+			Note note = modelMapper.map(userNotes, Note.class);
+			notesList.add(note);
 		}
 		return notesList;
-		
+
 	}
 
 	@Override
@@ -222,7 +245,8 @@ public class NoteServiceImpl implements INoteService {
 				labels.add(label);
 				note.setLabels(labels);
 				iNoteRepository.save(note);
-				Response response=ResponseUtility.getResponse(200, "", environment.getProperty("label.toNote.added.success"));
+				Response response = ResponseUtility.getResponse(200, "",
+						environment.getProperty("label.toNote.added.success"));
 				return response;
 			} else {
 				Response response = ResponseUtility.getResponse(204, "",

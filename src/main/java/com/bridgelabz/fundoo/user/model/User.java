@@ -31,7 +31,6 @@ public class User {
 	@DBRef
 	private List<Note> notes;
 	
-
 	// -----------------constructor---------------//
 
 	public User() {
@@ -40,7 +39,7 @@ public class User {
 
 	public User(String userId, String userName, String phoneNumber, String email, String userPassword,
 			String registeredTimeStamp, String updatedTimeStamp, boolean isVerified) {
-		super();
+		
 		this.userId = userId;
 		this.userName = userName;
 		this.phoneNumber = phoneNumber;
