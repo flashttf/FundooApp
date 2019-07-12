@@ -39,14 +39,6 @@ public class TokenUtility implements ITokenGenerator{
 	
 	@Override
 	public  String verifyToken(String token) {
-//		String id;
-//		Verification verification=JWT.require(Algorithm.HMAC256(secretPin));
-//		JWTVerifier jwtVerifier=verification.build();
-//		DecodedJWT decodedJWT = jwtVerifier.verify(token);
-//		Claim claim=decodedJWT.getClaim("ID");
-//		id=claim.asString();
-//		return id;
-		
 		Jws<Claims> claims=Jwts.parser().setSigningKey(secretPin).parseClaimsJws(token);
 		String userId=	claims.getBody().getId();
 		return userId;

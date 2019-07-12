@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.bridgelabz.fundoo.user.model.Note;
+import com.bridgelabz.fundoo.utility.ITokenGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 
@@ -43,6 +44,9 @@ public class ElasticSearchServiceImpl implements IElasticSearchService {
 
 	@Autowired
 	private ObjectMapper objectMapper;
+	
+	@Autowired
+	ITokenGenerator tokenGenerator;
 
 	@Override
 	public String createNote(Note note) throws IOException {
@@ -91,8 +95,12 @@ public class ElasticSearchServiceImpl implements IElasticSearchService {
 	}
 
 	@Override
-	public List<Note> findByTitle(String title, String userId) throws Exception {
-		QueryBuilder queryBuilder = QueryBuilders.boolQuery().must(QueryBuilders.matchQuery("title", title))
+	public List<Note> findByTitle(String title, String token) throws Exception {
+		String userId=tokenGenerator.verifyToken(token);
+		
+		QueryBuilder queryBuilder = QueryBuilders.boolQuery()
+				.must(QueryBuilders.queryStringQuery("*"+title+"*").analyzeWildcard(true)
+				.field("title",2.0f).field("description"))
 				.filter(QueryBuilders.termsQuery("userId", userId));
 
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
@@ -120,6 +128,7 @@ public class ElasticSearchServiceImpl implements IElasticSearchService {
 	}
 
 	public List<Note> findAll() throws Exception {
+		
 		SearchRequest searchRequest = new SearchRequest();
 
 		SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();

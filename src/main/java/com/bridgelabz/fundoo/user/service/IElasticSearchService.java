@@ -11,5 +11,5 @@ public interface IElasticSearchService {
 	public String deleteNote(String id) throws Exception;
 	public Note findById(String id) throws Exception;
 	public List<Note> findAll() throws Exception;
-	public List<Note> findByTitle(String title,String userId) throws Exception;
+	public List<Note> findByTitle(String title,String token) throws Exception;
 }

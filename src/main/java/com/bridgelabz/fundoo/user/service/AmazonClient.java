@@ -140,5 +140,13 @@ public class AmazonClient {
 		Response response=ResponseUtility.getResponse(500, "", environment.getProperty("file.deleteFromS3.Failed"));
 		return response;
 	}
+	
+	public URL getImageUrl(String token) {
+		String userID=tokenGenerator.verifyToken(token);
+		boolean isUser=iUserRepository.findById(userID).isPresent();
+		if(!isUser) {
+			res
+		}
+}
 
 }
