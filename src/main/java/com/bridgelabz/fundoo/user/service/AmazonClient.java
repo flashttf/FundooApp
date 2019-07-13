@@ -3,6 +3,8 @@ package com.bridgelabz.fundoo.user.service;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Date;
 import java.util.Optional;
 
@@ -109,7 +111,7 @@ public class AmazonClient {
 
 			File file = convertMultiPartToFile(multiPartFile);
 			String fileName = generateFileName(multiPartFile);
-			fileUrl = endPointUrl + "/" + bucketName + "/" + fileName;
+			fileUrl = "https://"+bucketName + ".s3.ap-south-1.amazonaws.com/" + fileName;
 			uploadFileToS3Bucket(fileName, file);
 			file.delete();
 			user.setImage(fileUrl);
@@ -144,8 +146,19 @@ public class AmazonClient {
 	public URL getImageUrl(String token) {
 		String userID=tokenGenerator.verifyToken(token);
 		boolean isUser=iUserRepository.findById(userID).isPresent();
-		if(!isUser) {
-			res
+		if(isUser) {
+			User user=iUserRepository.findById(userID).get();
+			String imageUrl=user.getImage();
+			URL url=null;
+			try {
+				url=new URL(imageUrl);
+			} catch (MalformedURLException e) {
+				// TODO: handle exception
+				e.printStackTrace();
+			}
+			return url;
+		}else {
+			return null;
 		}
 }
 

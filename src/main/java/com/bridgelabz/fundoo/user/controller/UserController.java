@@ -1,5 +1,7 @@
 package com.bridgelabz.fundoo.user.controller;
 
+import java.net.URL;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,7 @@ import com.bridgelabz.fundoo.user.dto.ForgotPasswordDto;
 import com.bridgelabz.fundoo.user.dto.LoginDto;
 import com.bridgelabz.fundoo.user.dto.UserDto;
 import com.bridgelabz.fundoo.user.model.Response;
+import com.bridgelabz.fundoo.user.service.AmazonClient;
 import com.bridgelabz.fundoo.user.service.IUserService;
 
 @RestController
@@ -29,6 +32,9 @@ public class UserController {
 
 	@Autowired
 	private IUserService userService;
+	
+	@Autowired
+	private AmazonClient amazonClient;
 
 	@PostMapping("/register")
 	public ResponseEntity<Response> register(@RequestBody UserDto userDto, HttpServletRequest httpServletRequest) {
@@ -60,5 +66,12 @@ public class UserController {
 		Response response = userService.resetPassword(token, forgotPasswordDto);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 
+	}
+	@GetMapping("/getImage")
+	public URL getImageUrl(@RequestHeader String token) {
+		
+		URL url=amazonClient.getImageUrl(token);
+		
+		return url;
 	}
 }

@@ -7,10 +7,11 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.mongodb.lang.NonNull;
+
 
 @Document
 public class User {
+	
 	@Id
 	private String userId;
 	private String userName;
