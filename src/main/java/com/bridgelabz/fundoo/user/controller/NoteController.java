@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bridgelabz.fundoo.user.dto.NoteDto;
 import com.bridgelabz.fundoo.user.model.Note;
 import com.bridgelabz.fundoo.user.model.Response;
+import com.bridgelabz.fundoo.user.service.IElasticSearchService;
 import com.bridgelabz.fundoo.user.service.INoteService;
 
 @RestController
@@ -30,10 +31,15 @@ public class NoteController {
 
 	@Autowired
 	private INoteService noteService;
+	
+	@Autowired
+	IElasticSearchService elasticService;
 
 	@PostMapping("/create")
 	public ResponseEntity<Response> createNote(@RequestBody NoteDto noteDto, @RequestHeader String token) {
+		System.out.println("Note-Class=="+noteDto.toString());
 		Response response = noteService.createNote(noteDto, token);
+		
 		return new ResponseEntity<Response>(response, HttpStatus.OK);
 	}
 
@@ -88,5 +94,12 @@ public class NoteController {
 			@RequestParam String labelId) {
 		Response response = noteService.removeLabelFromNote(noteId, token, labelId);
 		return new ResponseEntity<Response>(response, HttpStatus.OK);
+	}
+	
+	@GetMapping("/findByTitle")
+	public List<Note> findByTitle(@RequestParam String title,@RequestHeader String token) throws Exception{
+		List<Note> searchNotes=elasticService.findByTitle(title, token);
+		return searchNotes;
+		
 	}
 }

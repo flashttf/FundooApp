@@ -44,8 +44,8 @@ public class ElasticSearchController {
 	}
 
 	@GetMapping("/searchByTitle")
-	public List<Note> searchByTitle(@RequestHeader String title,@RequestParam String userId) throws Exception {
-		return elasticSearchService.findByTitle(title,userId);
+	public List<Note> searchByTitle(@RequestHeader String title,@RequestHeader String token) throws Exception {
+		return elasticSearchService.findByTitle(title,token);
 	}
 	
 	@DeleteMapping("/deleteNoteDocument")

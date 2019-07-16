@@ -39,6 +39,7 @@ public class LabelController {
 	@PutMapping("/update")
 	public ResponseEntity<Response> updateLabel(@RequestBody LabelDto labelDto, @RequestParam String labelId,
 			@RequestHeader String token) {
+		System.out.println("Label Info"+labelDto);
 		Response response = labelService.updateLabel(labelDto, labelId, token);
 		return new ResponseEntity<Response>(response, HttpStatus.OK);
 	}
