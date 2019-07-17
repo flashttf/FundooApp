@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -287,5 +288,20 @@ public class NoteServiceImpl implements INoteService {
 			return response;
 		}
 	}
+
+	@Override
+	public List<Label> getLabelOfNote(String noteId, String token) {
+		String id=tokenGenerator.verifyToken(token);
+		Optional<User> isUser=iUserRepository.findById(id);
+		
+		if(isUser.isPresent()) {
+			Optional<Note> isNote=iNoteRepository.findById(noteId);
+			return isNote.get().getLabels();
+			
+		}
+		return null;
+	}
+
+	
 
 }

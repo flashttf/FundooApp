@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bridgelabz.fundoo.user.dto.NoteDto;
+import com.bridgelabz.fundoo.user.model.Label;
 import com.bridgelabz.fundoo.user.model.Note;
 import com.bridgelabz.fundoo.user.model.Response;
 import com.bridgelabz.fundoo.user.service.IElasticSearchService;
@@ -85,6 +86,7 @@ public class NoteController {
 	@PostMapping("/AddLabelToNote")
 	public ResponseEntity<Response> addLabel(@RequestParam String noteId, @RequestHeader String token,
 			@RequestParam String labelId) {
+		System.out.println("noteId=="+noteId+"==labelId=="+labelId);
 		Response response = noteService.addLabelToNote(noteId, token, labelId);
 		return new ResponseEntity<Response>(response, HttpStatus.OK);
 	}
@@ -101,5 +103,11 @@ public class NoteController {
 		List<Note> searchNotes=elasticService.findByTitle(title, token);
 		return searchNotes;
 		
+	}
+	
+	@GetMapping("/getNoteLabels")
+	public List<Label> getNoteLabels(@RequestParam String noteId,@RequestHeader String token){
+		List<Label> noteLabelList=noteService.getLabelOfNote(noteId,token);
+		return noteLabelList;
 	}
 }

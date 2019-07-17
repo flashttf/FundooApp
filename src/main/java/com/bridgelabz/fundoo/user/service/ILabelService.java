@@ -10,6 +10,6 @@ public interface ILabelService {
 	Response createLabel(String token,LabelDto labelDto);
 	Response updateLabel(LabelDto labelDto,String labelId,String token);
 	Response deleteLabel(String token,String labelId);
-	List<LabelDto> readLabel(String token);
+	List<Label> readLabel(String token);
 }
 

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bridgelabz.fundoo.user.dto.LabelDto;
+import com.bridgelabz.fundoo.user.model.Label;
 import com.bridgelabz.fundoo.user.model.Response;
 
 import com.bridgelabz.fundoo.user.service.ILabelService;
@@ -39,7 +40,7 @@ public class LabelController {
 	@PutMapping("/update")
 	public ResponseEntity<Response> updateLabel(@RequestBody LabelDto labelDto, @RequestParam String labelId,
 			@RequestHeader String token) {
-		System.out.println("Label Info"+labelDto);
+		
 		Response response = labelService.updateLabel(labelDto, labelId, token);
 		return new ResponseEntity<Response>(response, HttpStatus.OK);
 	}
@@ -51,8 +52,8 @@ public class LabelController {
 	}
 
 	@GetMapping("/readAll")
-	public List<LabelDto> readLabel(@RequestHeader String token) {
-		List<LabelDto> label = labelService.readLabel(token);
+	public List<Label> readLabel(@RequestHeader String token) {
+		List<Label> label = labelService.readLabel(token);
 		return label;
 	}
 }

@@ -98,13 +98,13 @@ public class LabelServiceImpl implements ILabelService {
 	}
 
 	@Override
-	public List<LabelDto> readLabel(String token) {
+	public List<Label> readLabel(String token) {
 		String userId = tokenGenerator.verifyToken(token);
 		List<Label> labels = iLabelRepository.findByUserId(userId);
-		List<LabelDto> labelList = new ArrayList<LabelDto>();
+		List<Label> labelList = new ArrayList<Label>();
 		for (Label label : labels) {
-			LabelDto labelDto = modelMapper.map(label, LabelDto.class);
-			labelList.add(labelDto);
+			Label label1 = modelMapper.map(label, Label.class);
+			labelList.add(label1);
 		}
 		return labelList;
 	}
