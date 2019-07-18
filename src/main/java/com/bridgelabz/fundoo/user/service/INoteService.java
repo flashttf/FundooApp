@@ -19,4 +19,5 @@ public interface INoteService {
 	Response removeLabelFromNote(String noteId,String token,String labelId);
 	
 	List<Label> getLabelOfNote(String noteId, String token);
+	List<Note> getArchiveNote(String token);
 }

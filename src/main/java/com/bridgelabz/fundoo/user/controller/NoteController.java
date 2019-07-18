@@ -110,4 +110,10 @@ public class NoteController {
 		List<Label> noteLabelList=noteService.getLabelOfNote(noteId,token);
 		return noteLabelList;
 	}
+	
+	@GetMapping("/getArchiveNotes")
+	public List<Note> getArchiveNotes(@RequestHeader String token){
+		List<Note> archiveNoteList=noteService.getArchiveNote(token);
+		return archiveNoteList;
+	}
 }

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
@@ -298,6 +299,18 @@ public class NoteServiceImpl implements INoteService {
 			Optional<Note> isNote=iNoteRepository.findById(noteId);
 			return isNote.get().getLabels();
 			
+		}
+		return null;
+	}
+
+	@Override
+	public List<Note> getArchiveNote(String token) {
+		String userId=tokenGenerator.verifyToken(token);
+		Optional<User> isUser=iUserRepository.findById(userId);
+
+		if(isUser.isPresent()) {
+			return isUser.get().getNotes().stream().filter(l->l.isArchive()).collect(Collectors.toList());
+
 		}
 		return null;
 	}
