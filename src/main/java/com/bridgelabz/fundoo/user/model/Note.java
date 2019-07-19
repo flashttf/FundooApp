@@ -16,7 +16,16 @@ public class Note {
 	private boolean trash;
 	private boolean archive;
 	private boolean isPin;
+	private String colorCode;
 	
+	public String getColorCode() {
+		return colorCode;
+	}
+
+	public void setColorCode(String colorCode) {
+		this.colorCode = colorCode;
+	}
+
 	@DBRef
 	private List<Label> labels;
 	
@@ -105,8 +114,10 @@ public class Note {
 		
 	}
 
+	
+
 	public Note(String noteId, String userId, String title, String description, String createdTime, String updatedTime,
-			boolean trash, boolean archive, boolean isPin, List<Label> labels) {
+			boolean trash, boolean archive, boolean isPin, String colorCode, List<Label> labels) {
 		super();
 		this.noteId = noteId;
 		this.userId = userId;
@@ -117,16 +128,18 @@ public class Note {
 		this.trash = trash;
 		this.archive = archive;
 		this.isPin = isPin;
+		this.colorCode = colorCode;
 		this.labels = labels;
 	}
 
 	@Override
 	public String toString() {
-		return "Note [nodeId=" + noteId + ", userId=" + userId + ", title=" + title + ", description=" + description
+		return "Note [noteId=" + noteId + ", userId=" + userId + ", title=" + title + ", description=" + description
 				+ ", createdTime=" + createdTime + ", updatedTime=" + updatedTime + ", trash=" + trash + ", archive="
-				+ archive + ", isPin=" + isPin + ", labels=" + labels + "]";
+				+ archive + ", isPin=" + isPin + ", colorCode=" + colorCode + ", labels=" + labels + "]";
 	}
 
+	
 	
 
 	

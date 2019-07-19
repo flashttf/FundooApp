@@ -91,9 +91,10 @@ public class NoteController {
 		return new ResponseEntity<Response>(response, HttpStatus.OK);
 	}
 
-	@PostMapping("/RemoveLabelToNote")
+	@PostMapping("/removeLabelfromNote")
 	public ResponseEntity<Response> removeLabel(@RequestParam String noteId, @RequestHeader String token,
 			@RequestParam String labelId) {
+		System.out.println(" Noteid-->"+noteId+" LabelId-->"+labelId);
 		Response response = noteService.removeLabelFromNote(noteId, token, labelId);
 		return new ResponseEntity<Response>(response, HttpStatus.OK);
 	}
@@ -115,5 +116,11 @@ public class NoteController {
 	public List<Note> getArchiveNotes(@RequestHeader String token){
 		List<Note> archiveNoteList=noteService.getArchiveNote(token);
 		return archiveNoteList;
+	}
+	
+	@PutMapping("/setNoteColor")
+	public ResponseEntity<Response> setNoteColor(@RequestParam String noteId,@RequestHeader String token,@RequestBody String color) {
+	Response response=noteService.setNoteColor(noteId, token, color);
+	return new ResponseEntity<Response>(response,HttpStatus.OK);
 	}
 }

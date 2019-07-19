@@ -59,7 +59,7 @@ public class LabelServiceImpl implements ILabelService {
 					environment.getProperty("label.create.success"));
 			return response;
 		} else {
-			Response response = ResponseUtility.getResponse(204, "0", environment.getProperty("label.create.failed"));
+			Response response = ResponseUtility.getResponse(204, "", environment.getProperty("label.create.failed"));
 			return response;
 		}
 	}

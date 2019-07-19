@@ -17,7 +17,7 @@ public interface INoteService {
 	Response setPin(String token,String noteId);
 	Response addLabelToNote(String noteId,String token,String labelId);
 	Response removeLabelFromNote(String noteId,String token,String labelId);
-	
+	Response setNoteColor(String noteId,String token,String colorCode);
 	List<Label> getLabelOfNote(String noteId, String token);
 	List<Note> getArchiveNote(String token);
 }

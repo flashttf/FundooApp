@@ -315,6 +315,21 @@ public class NoteServiceImpl implements INoteService {
 		return null;
 	}
 
+	@Override
+	public Response setNoteColor(String noteId, String token, String color) {
+		String userId=tokenGenerator.verifyToken(token);
+		Optional<Note> isNote=iNoteRepository.findByNoteIdAndUserId(noteId, userId);
+		if(isNote.isPresent()) {
+			isNote.get().setColorCode(color);
+			isNote.get().setUpdatedTime(Utility.currentDate());
+			iNoteRepository.save(isNote.get());
+			Response response=ResponseUtility.getResponse(200, "", environment.getProperty("note.color.sucess"));
+			return response;
+		}
+		Response response=ResponseUtility.getResponse(200, "", environment.getProperty("note.color.failed"));
+		return response;
+	}
+
 	
 
 }
