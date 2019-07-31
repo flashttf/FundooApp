@@ -8,17 +8,17 @@ public class Response {
 	// -----------Constructors-----------//
 
 	public Response() {
-		super();
+		
 	}
 
 	public Response(int statusCode, String token) {
-		super();
+		
 		this.statusCode = statusCode;
 		this.token = token;
 	}
 
 	public Response(int statusCode, String token, String statusMessage) {
-		super();
+		
 		this.statusCode = statusCode;
 		this.token = token;
 		this.statusMessage = statusMessage;

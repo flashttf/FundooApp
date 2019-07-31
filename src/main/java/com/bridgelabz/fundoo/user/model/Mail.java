@@ -1,6 +1,8 @@
 package com.bridgelabz.fundoo.user.model;
 
-public class Mail {
+import java.io.Serializable;
+
+public class Mail  implements Serializable{
 	
 	private String senderEmail;
 	private String to;

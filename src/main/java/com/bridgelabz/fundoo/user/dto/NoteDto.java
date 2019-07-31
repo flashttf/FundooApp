@@ -21,11 +21,11 @@ public class NoteDto {
 	}
 
 	public NoteDto() {
-		super();
+		
 	}
 
 	public NoteDto(String title, String description) {
-		super();
+		
 		this.title = title;
 		this.description = description;
 	}

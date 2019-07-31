@@ -19,6 +19,7 @@ import com.bridgelabz.fundoo.user.dto.UserDto;
 import com.bridgelabz.fundoo.user.model.Mail;
 import com.bridgelabz.fundoo.user.model.Response;
 import com.bridgelabz.fundoo.user.model.User;
+
 import com.bridgelabz.fundoo.user.repository.IUserRepository;
 import com.bridgelabz.fundoo.utility.EncryptionUtility;
 import com.bridgelabz.fundoo.utility.ITokenGenerator;
@@ -49,6 +50,8 @@ public class UserServiceImpl implements IUserService {
 	@Autowired
 	private ITokenGenerator tokenGenerator;
 	
+	
+	
 	@Override
 	public Response registerUser(UserDto userDto, HttpServletRequest request) {
 		
@@ -74,7 +77,10 @@ public class UserServiceImpl implements IUserService {
 			email.setSubject("Verification");
 			email.setBody("Verification Link: \n"+activationUrl);
 			
-			mailService.send(email);
+//			mailService.send(email);
+			System.out.println("Sending rabbit MQ Mail");
+			mailService.rabbitSender(email);
+			
 
 			Response response = ResponseUtility.getResponse(200, token,
 					environment.getProperty("user.register.success"));

@@ -323,6 +323,13 @@ public class NoteServiceImpl implements INoteService {
 			isNote.get().setColorCode(color);
 			isNote.get().setUpdatedTime(Utility.currentDate());
 			iNoteRepository.save(isNote.get());
+			
+			try {
+				elasticService.updateNote(isNote.get());
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			Response response=ResponseUtility.getResponse(200, "", environment.getProperty("note.color.sucess"));
 			return response;
 		}
